@@ -1,0 +1,9 @@
+services:
+  selenium:
+    image: selenium/standalone-chrome:latest
+    ports:
+      - "4444:4444"
+      - "5900:5900"
+      - "7900:7900"
+    # memory 2g
+    shm_size: 2g
