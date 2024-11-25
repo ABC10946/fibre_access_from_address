@@ -11,7 +11,7 @@ import time
 # TEST_CASE1
 # ROOM_NAME = "５０５号"
 
-def autoFlets(driver, FIELD_ZIP1, FIELD_ZIP2, CHOME, BANTI, GO, IS_SHUGO, TATEMONO_NAME, ROOM_NAME):
+def autoFlets(driver, FIELD_ZIP1, FIELD_ZIP2, CHOME, BANTI, GO, IS_SHUGO, ROOM_NAME):
     try:
         driver.get("https://flets.com/application/sim")
 
@@ -43,8 +43,17 @@ def autoFlets(driver, FIELD_ZIP1, FIELD_ZIP2, CHOME, BANTI, GO, IS_SHUGO, TATEMO
             # id_nextButtonをクリック
             driver.find_element(By.ID, "id_nextButton").click()
 
+            # ul class="btn_list"の中にあるli要素の数を取得
+            li_list = driver.find_elements(By.CLASS_NAME, "build1")
+            # もし複数の建物がある場合名前を出力
+            for li in li_list:
+                print(li.text)
+
+            # li class="build1"をクリック
+            driver.find_element(By.CLASS_NAME, "build1").click()
+
             # 建物名が含まれてるテキストのボタン要素をクリック
-            driver.find_element(By.XPATH, "//button[contains(text(), '" + TATEMONO_NAME +"')]").click()
+            # driver.find_element(By.XPATH, "//button[contains(text(), '" + TATEMONO_NAME +"')]").click()
 
             # 部屋名が含まれてるテキストのボタン要素をクリック
             driver.find_element(By.XPATH, "//button[contains(text(), '" + ROOM_NAME +"')]").click()
@@ -60,11 +69,11 @@ def autoFlets(driver, FIELD_ZIP1, FIELD_ZIP2, CHOME, BANTI, GO, IS_SHUGO, TATEMO
         # XPATH /html/body/main/div/div[3]/p[1] にあるテキストを取得
         print(driver.find_element(By.XPATH, "/html/body/main/div/div[3]/p[1]").text)
 
+        time.sleep(5)
         driver.quit()
     except Exception as e:
         print("Error")
         print(e)
-        time.sleep(5)
         driver.quit()
 
 

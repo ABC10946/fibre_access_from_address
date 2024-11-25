@@ -41,9 +41,10 @@ def autoAddress(driver, TATEMONO_NAME):
         go = go.translate(str.maketrans('０１２３４５６７８９', '0123456789'))
 
         # time.sleep(60)
+        driver.quit()
+
         return zipCode1, zipCode2, chome, banti, go
 
-        driver.quit()
     except Exception as e:
         print("Error")
         print(e)
