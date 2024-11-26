@@ -67,10 +67,12 @@ def autoFlets(driver, FIELD_ZIP1, FIELD_ZIP2, CHOME, BANTI, GO, IS_SHUGO, ROOM_N
             driver.find_element(By.ID, "id_nextButton").click()
 
         # XPATH /html/body/main/div/div[3]/p[1] にあるテキストを取得
-        print(driver.find_element(By.XPATH, "/html/body/main/div/div[3]/p[1]").text)
+        fibreType = driver.find_element(By.XPATH, "/html/body/main/div/div[3]/p[1]").text
 
-        time.sleep(5)
         driver.quit()
+
+        return fibreType
+
     except Exception as e:
         print("Error")
         print(e)
