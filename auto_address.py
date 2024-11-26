@@ -38,7 +38,12 @@ def autoAddress(driver, TATEMONO_NAME):
         zipCode2 = address[5:9]
 
         # # 住所の中から丁目を取得 数字は全角
-        chome = re.search(r"[０-９]{0,2}丁目", address).group()
+        chomeBantiGoRaw = re.findall(r"[０-９]{0,2}", address)
+        filtered = [x for x in chomeBantiGoRaw if x != '']
+        chome = filtered[0]
+
+        chome = chome.translate(str.maketrans('０１２３４５６７８９', '0123456789'))
+
         # 全角数字を半角数字に変換
 
         # # 住所の中から番地を取得 〇丁目〇〇番―〇〇号の番地を取得
