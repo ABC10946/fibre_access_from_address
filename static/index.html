@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Address Search</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        input, button {
+            padding: 10px;
+            margin: 5px;
+        }
+        #result {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Address Search</h1>
+    <input type="text" id="addressInput" placeholder="建物検索ワードを入力">
+    <button onclick="searchAddress()">検索</button>
+    <div id="result"></div>
+
+    <script>
+        async function searchAddress() {
+            const address = document.getElementById('addressInput').value;
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '検索中...';
+
+            try {
+                const response = await fetch(`/api/search?address=${encodeURIComponent(address)}`, {
+                    method: 'POST'
+                });
+                const data = await response.json();
+
+                if (response.ok) {
+                    resultDiv.innerHTML = `<p>ファイバータイプ: ${data.fibreType}</p>`;
+                } else {
+                    resultDiv.innerHTML = `<p style="color: red;">エラー: ${data.error}</p>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<p style="color: red;">エラー: ${error.message}</p>`;
+            }
+        }
+    </script>
+</body>
+</html>
