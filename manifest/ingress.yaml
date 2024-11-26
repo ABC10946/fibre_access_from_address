@@ -1,0 +1,16 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: fibre-from-address-ingress
+spec:
+  rules:
+  - host: fibre-from-address.k8s.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: fibre-from-address
+            port:
+              number: 80

@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: fibre-from-address
+spec:
+  selector:
+    app: fibre-from-address
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5000
