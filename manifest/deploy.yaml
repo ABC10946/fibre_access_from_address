@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: fibre-from-address
-        image: harbor.k8s.local/fibre_from_address/fibre_from_address:0.0.1
+        image: harbor.k8s.local/fibre_from_address/fibre_from_address:0.2.0
         ports:
         - containerPort: 5000
         env:

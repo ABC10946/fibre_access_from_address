@@ -21,17 +21,19 @@
 <body>
     <h1>Address Search</h1>
     <input type="text" id="addressInput" placeholder="建物検索ワードを入力">
+    <input type="text" id="roomNumberInput" placeholder="部屋番号を入力">
     <button onclick="searchAddress()">検索</button>
     <div id="result"></div>
 
     <script>
         async function searchAddress() {
             const address = document.getElementById('addressInput').value;
+            const roomNumber = document.getElementById('roomNumberInput').value;
             const resultDiv = document.getElementById('result');
             resultDiv.innerHTML = '検索中...';
 
             try {
-                const response = await fetch(`/api/search?address=${encodeURIComponent(address)}`, {
+                const response = await fetch(`/api/search?address=${encodeURIComponent(address)}&roomNumber=${encodeURIComponent(roomNumber)}`, {
                     method: 'POST'
                 });
                 const data = await response.json();

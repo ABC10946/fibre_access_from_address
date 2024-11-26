@@ -1,4 +1,4 @@
-DOCKER_IMAGE = harbor.k8s.local/abctech/fibre_from_address
+DOCKER_IMAGE = harbor.k8s.local/fibre_from_address/fibre_from_address
 DOCKER_IMAGE_TAG = $(shell git describe --tags --always --dirty)
 
 docker-build:

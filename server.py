@@ -15,6 +15,8 @@ def index():
 @app.route('/api/search', methods=['POST'])
 def search():
     address = request.args.get('address')
+    roomNumber = request.args.get('roomNumber', '%EF%BC%91%EF%BC%90%EF%BC%91%E5%8F%B7')
+
     if not address:
         return jsonify({"error": "address parameter is required"}), 400
 
@@ -26,6 +28,9 @@ def search():
         print(address)
 
         address = urllib.parse.unquote(address)
+
+        roomNumber = urllib.parse.unquote(roomNumber)
+
         driver = webdriver.Remote(
             command_executor='http://selenium.k8s.local/wd/hub',
             options=chrome_options
@@ -41,7 +46,7 @@ def search():
             options=chrome_options
         )
 
-        fibreType = autoFlets(driver, zipCode1, zipCode2, chome, banti, go, True, "１０１号")
+        fibreType = autoFlets(driver, zipCode1, zipCode2, chome, banti, go, True, address, roomNumber)
 
         return jsonify({"fibreType": fibreType})
 
