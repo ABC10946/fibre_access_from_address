@@ -2,6 +2,10 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 import time
 import re
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 def autoAddress(driver, TATEMONO_NAME):
@@ -21,10 +25,10 @@ def autoAddress(driver, TATEMONO_NAME):
             # 〒マークから始まる文字列を取得
             # address = re.search(r"〒[0-9]{3}-[0-9]{4}.*", address).group()
             if "〒" in address:
-                print("住所取得成功")
+                logger.info("住所取得成功")
                 break
             else:
-                print("住所取得失敗")
+                logger.info("住所取得失敗")
                 retryCount -= 1
                 time.sleep(3)
 
@@ -33,7 +37,7 @@ def autoAddress(driver, TATEMONO_NAME):
         # 〒マークから始まる文字列を取得
         address = re.search(r"〒[0-9]{3}-[0-9]{4}.*", address).group()
 
-        print(address)
+        logger.info(address)
         zipCode1 = address[1:4]
         zipCode2 = address[5:9]
 
@@ -64,8 +68,8 @@ def autoAddress(driver, TATEMONO_NAME):
         return zipCode1, zipCode2, chome, banti, go
 
     except Exception as e:
-        print("Error")
-        print(e)
+        logger.error("Error")
+        logger.error(e)
         driver.quit()
 
 if __name__ == "__main__":

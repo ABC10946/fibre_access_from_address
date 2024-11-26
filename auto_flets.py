@@ -1,7 +1,11 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 import time
+from rapidfuzz.distance import Levenshtein
+import logging
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 #############
@@ -11,7 +15,7 @@ import time
 # TEST_CASE1
 # ROOM_NAME = "５０５号"
 
-def autoFlets(driver, FIELD_ZIP1, FIELD_ZIP2, CHOME, BANTI, GO, IS_SHUGO, ROOM_NAME):
+def autoFlets(driver, FIELD_ZIP1, FIELD_ZIP2, CHOME, BANTI, GO, IS_SHUGO, CONSTRUCT_NAME, ROOM_NAME):
     try:
         driver.get("https://flets.com/application/sim")
 
@@ -46,11 +50,30 @@ def autoFlets(driver, FIELD_ZIP1, FIELD_ZIP2, CHOME, BANTI, GO, IS_SHUGO, ROOM_N
             # ul class="btn_list"の中にあるli要素の数を取得
             li_list = driver.find_elements(By.CLASS_NAME, "build1")
             # もし複数の建物がある場合名前を出力
+
+            min_levenshtein = 100
+            target_li = None
+
             for li in li_list:
-                print(li.text)
+                logger.info(li.text)
+                # li.textのうちCONSTRUCT_NAMEとレーベンシュタイン距離が一番近いものをクリック
+                levenshtein_distance = Levenshtein.distance(li.text, CONSTRUCT_NAME)
+                if levenshtein_distance < min_levenshtein:
+                    min_levenshtein = levenshtein_distance
+                    target_li = li
+            
+            logger.info("最小レーベンシュタイン距離: " + str(min_levenshtein))
+            logger.info("最小レーベンシュタイン距離の建物名: " + target_li.text)
+            if target_li is None:
+                logger.error("建物名が見つかりませんでした")
+                driver.quit()
+                return "建物名が見つかりませんでした"
+
+            target_li.click()
+
 
             # li class="build1"をクリック
-            driver.find_element(By.CLASS_NAME, "build1").click()
+            # driver.find_element(By.CLASS_NAME, "build1").click()
 
             # 建物名が含まれてるテキストのボタン要素をクリック
             # driver.find_element(By.XPATH, "//button[contains(text(), '" + TATEMONO_NAME +"')]").click()
@@ -71,11 +94,13 @@ def autoFlets(driver, FIELD_ZIP1, FIELD_ZIP2, CHOME, BANTI, GO, IS_SHUGO, ROOM_N
 
         driver.quit()
 
+        logger.info(fibreType)
+
         return fibreType
 
     except Exception as e:
-        print("Error")
-        print(e)
+        logger.info("Error")
+        logger.error(e)
         driver.quit()
 
 

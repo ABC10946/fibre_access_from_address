@@ -21,4 +21,7 @@ if __name__ == "__main__":
         options=chrome_options
     )
 
-    autoFlets(driver, zipCode1, zipCode2, chome, banti, go, True, ROOM_NAME)
+    chome = chome.translate(str.maketrans('0123456789', '０１２３４５６７８９'))
+    chome = chome + "丁目"
+
+    autoFlets(driver, zipCode1, zipCode2, chome, banti, go, True, TATEMONO_SEARCH_WORD, ROOM_NAME)
