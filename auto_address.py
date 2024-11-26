@@ -14,7 +14,20 @@ def autoAddress(driver, TATEMONO_NAME):
         # textareaでエンターキーを押す
         driver.find_element(By.ID, "searchboxinput").send_keys(u'\ue007')
 
-        time.sleep(3)
+        retryCount = 10
+
+        while retryCount > 0:
+            address = driver.find_element(By.TAG_NAME, "body").text
+            # 〒マークから始まる文字列を取得
+            # address = re.search(r"〒[0-9]{3}-[0-9]{4}.*", address).group()
+            if "〒" in address:
+                print("住所取得成功")
+                break
+            else:
+                print("住所取得失敗")
+                retryCount -= 1
+                time.sleep(3)
+
         # ページのテキストから住所を取得　正規表現で取得
         address = driver.find_element(By.TAG_NAME, "body").text
         # 〒マークから始まる文字列を取得
