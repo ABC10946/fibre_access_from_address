@@ -2,10 +2,10 @@ from flask import Flask, request, jsonify, send_from_directory
 from selenium import webdriver
 from auto_address import autoAddress
 from auto_flets import autoFlets
-import urllib
+import urllib.parse
 
 app = Flask(__name__)
-app.json.ensure_ascii = False
+app.config['JSON_AS_ASCII'] = False
 
 
 @app.route('/')
@@ -37,6 +37,9 @@ def search():
         )
 
         zipCode1, zipCode2, chome, banti, go = autoAddress(driver, address)
+
+        if zipCode1 is None or zipCode2 is None or chome is None or banti is None:
+            return jsonify({"error": "Failed to get address"}), 500
 
         chome = chome.translate(str.maketrans('0123456789', '０１２３４５６７８９'))
         chome = chome + "丁目"

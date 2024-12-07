@@ -24,8 +24,8 @@ spec:
           value: "http://selenium:4444/wd/hub"
         resources:
           limits:
-            cpu: 100m
-            memory: 128Mi
+            cpu: 2
+            memory: 4096Mi
           requests:
-            cpu: 100m
-            memory: 128Mi
+            cpu: 1
+            memory: 2048Mi

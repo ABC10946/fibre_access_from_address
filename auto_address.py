@@ -8,7 +8,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-def autoAddress(driver, TATEMONO_NAME):
+def autoAddress(driver: webdriver.Remote, TATEMONO_NAME: str):
     try:
         driver.get("https://www.google.com/maps")
 
@@ -35,7 +35,13 @@ def autoAddress(driver, TATEMONO_NAME):
         # ページのテキストから住所を取得　正規表現で取得
         address = driver.find_element(By.TAG_NAME, "body").text
         # 〒マークから始まる文字列を取得
-        address = re.search(r"〒[0-9]{3}-[0-9]{4}.*", address).group()
+        addressSearch = re.search(r"〒[0-9]{3}-[0-9]{4}.*", address)
+        if addressSearch is None:
+            logger.error("住所取得失敗")
+            driver.quit()
+            return None, None, None, None, None
+
+        address = addressSearch.group()
 
         logger.info(address)
         zipCode1 = address[1:4]

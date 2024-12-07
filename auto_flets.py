@@ -1,6 +1,5 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-import time
 from rapidfuzz.distance import Levenshtein
 import logging
 
@@ -15,7 +14,7 @@ logger = logging.getLogger(__name__)
 # TEST_CASE1
 # ROOM_NAME = "５０５号"
 
-def autoFlets(driver, FIELD_ZIP1, FIELD_ZIP2, CHOME, BANTI, GO, IS_SHUGO, CONSTRUCT_NAME, ROOM_NAME):
+def autoFlets(driver: webdriver.Remote, FIELD_ZIP1: str, FIELD_ZIP2: str, CHOME: str, BANTI: str, GO: str, IS_SHUGO: bool, CONSTRUCT_NAME: str, ROOM_NAME: str) -> str | None:
     try:
         driver.get("https://flets.com/application/sim")
 
@@ -63,6 +62,12 @@ def autoFlets(driver, FIELD_ZIP1, FIELD_ZIP2, CHOME, BANTI, GO, IS_SHUGO, CONSTR
                     target_li = li
             
             logger.info("最小レーベンシュタイン距離: " + str(min_levenshtein))
+
+            if target_li is None:
+                logger.error("建物名が見つかりませんでした")
+                driver.quit()
+                return "建物名が見つかりませんでした"
+
             logger.info("最小レーベンシュタイン距離の建物名: " + target_li.text)
             if target_li is None:
                 logger.error("建物名が見つかりませんでした")
