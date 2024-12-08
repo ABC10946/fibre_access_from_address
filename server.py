@@ -36,7 +36,7 @@ def search():
             options=chrome_options
         )
 
-        zipCode1, zipCode2, chome, banti, go = autoAddress(driver, address)
+        zipCode1, zipCode2, chome, banti, go, rawAddress = autoAddress(driver, address)
 
         if zipCode1 is None or zipCode2 is None or chome is None or banti is None:
             return jsonify({"error": "Failed to get address"}), 500
@@ -51,7 +51,12 @@ def search():
 
         fibreType = autoFlets(driver, zipCode1, zipCode2, chome, banti, go, True, address, roomNumber)
 
-        return jsonify({"fibreType": fibreType})
+        return jsonify(
+            {
+                "fibreType": fibreType,
+                "address": rawAddress
+            }
+        )
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500

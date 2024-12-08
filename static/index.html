@@ -23,6 +23,7 @@
     <input type="text" id="addressInput" placeholder="建物検索ワードを入力">
     <input type="text" id="roomNumberInput" placeholder="部屋番号を入力">
     <button onclick="searchAddress()">検索</button>
+    <div id="address"></div>
     <div id="result"></div>
 
     <script>
@@ -30,6 +31,7 @@
             const address = document.getElementById('addressInput').value;
             const roomNumber = document.getElementById('roomNumberInput').value;
             const resultDiv = document.getElementById('result');
+            const addressDiv = document.getElementById('address');
             resultDiv.innerHTML = '検索中...';
 
             try {
@@ -40,6 +42,7 @@
 
                 if (response.ok) {
                     resultDiv.innerHTML = `<p>ファイバータイプ: ${data.fibreType}</p>`;
+                    addressDiv.innerHTML = `<p>住所: ${data.address}</p>`;
                 } else {
                     resultDiv.innerHTML = `<p style="color: red;">エラー: ${data.error}</p>`;
                 }

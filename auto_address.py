@@ -41,6 +41,8 @@ def autoAddress(driver: webdriver.Remote, TATEMONO_NAME: str):
             driver.quit()
             return None, None, None, None, None
 
+        rawAddress = addressSearch.group()
+
         address = addressSearch.group()
 
         logger.info(address)
@@ -71,7 +73,7 @@ def autoAddress(driver: webdriver.Remote, TATEMONO_NAME: str):
         # time.sleep(60)
         driver.quit()
 
-        return zipCode1, zipCode2, chome, banti, go
+        return zipCode1, zipCode2, chome, banti, go, rawAddress
 
     except Exception as e:
         logger.error("Error")
