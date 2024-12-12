@@ -3,6 +3,7 @@ from selenium import webdriver
 from auto_address import autoAddress
 from auto_flets import autoFlets
 import urllib.parse
+import os
 
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
@@ -14,6 +15,10 @@ def index():
 
 @app.route('/api/search', methods=['POST'])
 def search():
+    seleniumHubURL = os.getenv('SELENIUM_HUB_URL')
+    if seleniumHubURL is None:
+        return jsonify({"error": "SELENIUM_HUB_URL is not set"}), 500
+
     address = request.args.get('address')
     roomNumber = request.args.get('roomNumber', '%EF%BC%91%EF%BC%90%EF%BC%91%E5%8F%B7')
 
@@ -32,7 +37,7 @@ def search():
         roomNumber = urllib.parse.unquote(roomNumber)
 
         driver = webdriver.Remote(
-            command_executor='http://selenium.k8s.local/wd/hub',
+            command_executor=seleniumHubURL,
             options=chrome_options
         )
 
@@ -45,7 +50,7 @@ def search():
         chome = chome + "丁目"
 
         driver = webdriver.Remote(
-            command_executor='http://selenium.k8s.local/wd/hub',
+            command_executor=seleniumHubURL,
             options=chrome_options
         )
 
