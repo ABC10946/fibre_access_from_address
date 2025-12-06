@@ -1,5 +1,8 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
 from rapidfuzz.distance import Levenshtein
 import logging
 
@@ -16,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 def autoFlets(driver: webdriver.Remote, FIELD_ZIP1: str, FIELD_ZIP2: str, CHOME: str, BANTI: str, GO: str, IS_SHUGO: bool, CONSTRUCT_NAME: str, ROOM_NAME: str) -> str | None:
     try:
-        driver.get("https://flets.com/application/sim")
+        driver.get("https://flets.com/flets-hikari/application/sim/")
 
         # input form name="FIELD_ZIP1"に入力
         driver.find_element(By.NAME, "FIELD_ZIP1").send_keys(FIELD_ZIP1)
@@ -24,13 +27,32 @@ def autoFlets(driver: webdriver.Remote, FIELD_ZIP1: str, FIELD_ZIP2: str, CHOME:
         driver.find_element(By.NAME, "FIELD_ZIP2").send_keys(FIELD_ZIP2)
 
         # ボタンをクリック class="btn_a_js_co_post_js_icon_blank"
-        driver.find_element(By.CLASS_NAME, "btn_a").click()
+        driver.find_element(By.CLASS_NAME, "search_btn").click()
 
-        # 新しいタブが開くので、タブを切り替える
-        driver.switch_to.window(driver.window_handles[1])
+        # 検索ボタンで新しいタブが開く場合がある -> 新しいウィンドウに切り替え
+        wait = WebDriverWait(driver, 15)
+        try:
+            wait.until(EC.number_of_windows_to_be(2))
+            driver.switch_to.window(driver.window_handles[-1])
+        except TimeoutException:
+            # 新しいウィンドウが開かない場合はそのまま続行
+            logger.info("新しいウィンドウが開きませんでした。現在のウィンドウを使用します。")
 
-        # ３丁目が含まれてるテキストのボタン要素をクリック
-        driver.find_element(By.XPATH, "//button[contains(text(), '" + CHOME +"')]").click()
+        # CHOME ボタンは <button> の直テキストではない場合があるため、text() ではなく . を使う
+        # また要素が表示・クリック可能になるまで待つ
+        chome_xpath = "//button[contains(., '" + CHOME + "')]"
+        try:
+            chome_el = wait.until(EC.element_to_be_clickable((By.XPATH, chome_xpath)))
+            chome_el.click()
+        except TimeoutException:
+            logger.error(f"CHOME要素が見つかりませんでした: {CHOME}")
+            # デバッグ用にページの一部をログ出力
+            try:
+                logger.debug(driver.page_source[:2000])
+            except Exception:
+                pass
+            driver.quit()
+            return None
 
         # input name="banchi1to3manualAddressNum1"に入力
         driver.find_element(By.NAME, "banchi1to3manualAddressNum1").send_keys(BANTI)
@@ -68,12 +90,6 @@ def autoFlets(driver: webdriver.Remote, FIELD_ZIP1: str, FIELD_ZIP2: str, CHOME:
                 driver.quit()
                 return "建物名が見つかりませんでした"
 
-            logger.info("最小レーベンシュタイン距離の建物名: " + target_li.text)
-            if target_li is None:
-                logger.error("建物名が見つかりませんでした")
-                driver.quit()
-                return "建物名が見つかりませんでした"
-
             target_li.click()
 
 
@@ -84,7 +100,10 @@ def autoFlets(driver: webdriver.Remote, FIELD_ZIP1: str, FIELD_ZIP2: str, CHOME:
             # driver.find_element(By.XPATH, "//button[contains(text(), '" + TATEMONO_NAME +"')]").click()
 
             # 部屋名が含まれてるテキストのボタン要素をクリック
-            driver.find_element(By.XPATH, "//button[contains(text(), '" + ROOM_NAME +"')]").click()
+            ROOM_NAME_ZENKAKU = ROOM_NAME.translate(str.maketrans('0123456789', '０１２３４５６７８９'))
+            logger.info("クリックする部屋名: " + ROOM_NAME_ZENKAKU)
+
+            driver.find_element(By.XPATH, "//button[contains(text(), '" + ROOM_NAME_ZENKAKU +"')]").click()
 
         else:
             # 一戸建ての場合

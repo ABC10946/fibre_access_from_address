@@ -1,5 +1,5 @@
-DOCKER_IMAGE = harbor.k8s.local/fibre_from_address/fibre_from_address
-DOCKER_IMAGE_TAG = $(shell git describe --tags --always --dirty)
+DOCKER_IMAGE = ghcr.io/abc10946/fibre_from_address
+DOCKER_IMAGE_TAG = $(shell git describe --tags --always --dirty --abbrev=14)
 
 docker-build:
 	docker build -t $(DOCKER_IMAGE):$(DOCKER_IMAGE_TAG) .

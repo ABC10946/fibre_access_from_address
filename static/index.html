@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,33 +10,71 @@
             font-family: Arial, sans-serif;
             margin: 20px;
         }
-        input, button {
+
+        input,
+        button {
             padding: 10px;
             margin: 5px;
         }
+
         #result {
             margin-top: 20px;
         }
     </style>
 </head>
+
 <body>
     <h1>Address Search</h1>
     <input type="text" id="addressInput" placeholder="建物検索ワードを入力">
-    <input type="text" id="roomNumberInput" placeholder="部屋番号を入力">
+    <div id="roomNumberContainer">
+        <input type="text" id="roomNumberInput" placeholder="部屋番号を入力">
+    </div>
+
+    <div>
+        <label>
+            <input type="radio" name="housingType" value="shugo" checked onchange="toggleRoomInput()"> 集合住宅
+        </label>
+        <label>
+            <input type="radio" name="housingType" value="kodate" onchange="toggleRoomInput()"> 戸建て
+        </label>
+    </div>
+
     <button onclick="searchAddress()">検索</button>
     <div id="address"></div>
     <div id="result"></div>
 
     <script>
+        function toggleRoomInput() {
+            const housingType = document.querySelector('input[name="housingType"]:checked').value;
+            const roomContainer = document.getElementById('roomNumberContainer');
+            if (housingType === 'shugo') {
+                roomContainer.style.display = 'block';
+            } else {
+                roomContainer.style.display = 'none';
+            }
+        }
+
+        // Initialize state on load
+        window.onload = toggleRoomInput;
+
         async function searchAddress() {
             const address = document.getElementById('addressInput').value;
-            const roomNumber = document.getElementById('roomNumberInput').value;
+
+            // Get selected housing type
+            const housingType = document.querySelector('input[name="housingType"]:checked').value;
+            const isShugo = housingType === 'shugo';
+
+            let roomNumber = '';
+            if (isShugo) {
+                roomNumber = document.getElementById('roomNumberInput').value;
+            }
+
             const resultDiv = document.getElementById('result');
             const addressDiv = document.getElementById('address');
             resultDiv.innerHTML = '検索中...';
 
             try {
-                const response = await fetch(`/api/search?address=${encodeURIComponent(address)}&roomNumber=${encodeURIComponent(roomNumber)}`, {
+                const response = await fetch(`/api/search?address=${encodeURIComponent(address)}&roomNumber=${encodeURIComponent(roomNumber)}&isShugo=${isShugo}`, {
                     method: 'POST'
                 });
                 const data = await response.json();
@@ -52,4 +91,5 @@
         }
     </script>
 </body>
+
 </html>
