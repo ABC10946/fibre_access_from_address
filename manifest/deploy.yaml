@@ -14,14 +14,16 @@ spec:
       labels:
         app: fibre-from-address
     spec:
+      imagePullSecrets:
+        - name: regcred
       containers:
       - name: fibre-from-address
-        image: ghcr.io/abc10946/fibre_from_address:0.2.1
+        image: ghcr.io/abc10946/fibre_from_address:0.3.0
         ports:
         - containerPort: 5000
         env:
         - name: SELENIUM_REMOTE_URL
-          value: "http://selenium:4444/wd/hub"
+          value: "http://selenium.k8s.internal:4444/wd/hub"
         resources:
           limits:
             cpu: 2
