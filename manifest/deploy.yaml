@@ -18,12 +18,12 @@ spec:
         - name: regcred
       containers:
       - name: fibre-from-address
-        image: ghcr.io/abc10946/fibre_from_address:0.3.0
+        image: ghcr.io/abc10946/fibre_from_address:0.3.2
         ports:
         - containerPort: 5000
         env:
-        - name: SELENIUM_REMOTE_URL
-          value: "http://selenium.k8s.internal:4444/wd/hub"
+        - name: SELENIUM_HUB_URL
+          value: "http://selenium-grid-selenium-hub:4444/wd/hub"
         resources:
           limits:
             cpu: 2
