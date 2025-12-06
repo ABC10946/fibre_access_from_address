@@ -21,6 +21,8 @@ def search():
 
     address = request.args.get('address')
     roomNumber = request.args.get('roomNumber', '%EF%BC%91%EF%BC%90%EF%BC%91%E5%8F%B7')
+    isShugoStr = request.args.get('isShugo', 'true')
+    isShugo = isShugoStr.lower() == 'true'
 
     if not address:
         return jsonify({"error": "address parameter is required"}), 400
@@ -54,7 +56,7 @@ def search():
             options=chrome_options
         )
 
-        fibreType = autoFlets(driver, zipCode1, zipCode2, chome, banti, go, True, address, roomNumber)
+        fibreType = autoFlets(driver, zipCode1, zipCode2, chome, banti, go, isShugo, address, roomNumber)
 
         return jsonify(
             {
